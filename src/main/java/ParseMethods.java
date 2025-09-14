@@ -1,5 +1,4 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -14,11 +13,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,9 +76,37 @@ public class ParseMethods {
                 Employee employee = new Employee(Long.parseLong(id), firstName, lastName, country, Integer.parseInt(age));
                 employees.add(employee);
             }
+        }
+        return employees;
+    }
 
+    public static String readString(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+            return String.valueOf(result);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        return employees;
+    }
+
+    public static List<Employee> jsonToList(String json) {
+        List<Employee> list = new ArrayList<>();
+
+        JsonParser parser = new JsonParser();
+        JsonArray jsonArray = (JsonArray) parser.parse(json);
+
+
+        Gson gson = new GsonBuilder().create();
+        for (Object obj : jsonArray) {
+            String jsonObject = obj.toString();
+            Employee employee = gson.fromJson(jsonObject, Employee.class);
+            list.add(employee);
+        }
+        return list;
     }
 }
