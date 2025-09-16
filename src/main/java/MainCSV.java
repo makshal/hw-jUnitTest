@@ -8,6 +8,7 @@ public class MainCSV {
         String fileName = "data.csv";
 
         List<Employee> list = ParseMethods.parseCSV(columnMapping, fileName);
+        System.out.println(list);
         String json = ParseMethods.listToJson(list);
         ParseMethods.writeString(json, "data.json");
     }
