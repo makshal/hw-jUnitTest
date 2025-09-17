@@ -3,6 +3,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,5 +73,27 @@ public class ParseCSVTest {
             Assertions.assertEquals(expected.getId(), actual.getId());
         }
     }
+
+    @Test
+    @DisplayName("Тесты на Hamcrest на примере одного метода")
+    void shouldBeEqualToListOfGivenValuesWithHamcrest() {
+
+        String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
+        String fileName = "data.csv";
+        List<Employee> expectedList = new ArrayList<>();
+
+        expectedList.add(new Employee(1, "John", "Smith", "USA", 25));
+        expectedList.add(new Employee(2, "Inav", "Petrov", "RU", 23));
+
+        List<Employee> actual = parseMethods.parseCSV(columnMapping, fileName);
+
+        assertThat(actual, is(expectedList));
+        assertThat(actual.getFirst().getId(), equalTo(expectedList.getFirst().getId()));
+        assertThat(actual, notNullValue());
+        assertThat(actual, hasSize(2));
+        assertThat(actual.getFirst().getFirstName(), containsString("John"));
+        assertThat(expectedList.size(), is(actual.size()));
+    }
+
 }
 
